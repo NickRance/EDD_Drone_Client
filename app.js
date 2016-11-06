@@ -38,7 +38,7 @@ function start_location_tracking()
 {
     var spawn = require('child_process').spawn;
    // track = spawn('ls', {
-    track = spawn('termux-location',['-r'], {
+    track = spawn('termux-location -r', {
         //stdio: 'ignore',
         shell:true
     });
