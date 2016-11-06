@@ -5,7 +5,7 @@
 var server_url="http://nranceedd.azurewebsites.net/";
 var io = require('socket.io-client')(server_url);
 const exec = require('child_process').exec;
-var cmd = 'termux-battery-status';
+var cmd = '';
 var child;
 
 // function fivesec() {
@@ -34,8 +34,25 @@ function run_cmd(command) {
     });
 }
 
+function start_location_tracking()
+{
+    var spawn = require('child_process').spawn;
+   // track = spawn('ls', {
+    track = spawn('termux-location',['-r'], {
+        //stdio: 'ignore',
+        shell:true
+    });
+    track.stdout.on('data', function(data)
+    {
+        io.emit("drone_message",data);
+    })
+
+}
+
+
 io.on('connect', function(socket){
     console.log('Client has connected');
+    start_location_tracking();
      //fivesec();
      io.on('client_message', function(msg){
          console.log("message received");
