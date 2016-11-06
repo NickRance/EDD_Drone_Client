@@ -6,19 +6,12 @@ var server_url="http://nranceedd.azurewebsites.net/";
 var io = require('socket.io-client')(server_url);
 var exec = require('child_process').exec;
 var child;
-//var request = require('request');
 
 function fivesec() {
     setInterval(function () {
-        //console.log('5 second passed');
+       // console.log('5 second passed');
         io.emit('drone_message', "5 seconds have passed");
     }, 5000);
-    socket.on('client_message', function(msg){
-        console.log("Client: "+msg);
-    });
-    socket.on('drone_message', function(msg){
-        console.log("Drone: "+ msg);
-    });
 }
 
 // child = exec("echo 'This is being called from my node script'",function (error, stdout, stderr) {
@@ -29,7 +22,13 @@ function fivesec() {
 //     }
 // });
 
-io.on('connection', function onConnect(socket){
+io.on('connect', function(socket){
     console.log('Client has connected');
-    fivesec();
+     fivesec();
+     io.on('client_message', function(msg){
+         console.log(msg);
+     });
+      io.on('drone_message', function(msg){
+          console.log(msg);
+      });
 });
