@@ -23,7 +23,10 @@ function fivesec() {
 //     }
 // });
 
-io.on('connect', function onConnect(){
+io.on('connect', function onConnect(socket){
     console.log('Client has connected');
     fivesec();
+    socket.on('client_message', function(msg){
+       console.log("Client: "+msg);
+    });
 });
