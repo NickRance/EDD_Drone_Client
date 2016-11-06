@@ -30,6 +30,6 @@ io.on('connection', function onConnect(socket){
        console.log("Client: "+msg);
     });
     socket.on('drone_message', function(msg){
-        io.emit('drone_message',"Drone: "+ msg);
+        console.log('drone_message',"Drone: "+ msg);
     });
 });
