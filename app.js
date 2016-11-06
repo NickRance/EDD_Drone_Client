@@ -8,20 +8,9 @@ const exec = require('child_process').exec;
 var cmd = '';
 var child;
 
-// function fivesec() {
-//     setInterval(function () {
-//             exec(cmd, function(error, stdout, stderr) {
-//                 if (error) {
-//                     io.emit('drone_message',"Error: "+ error);
-//                 }
-//                 else{
-//                     io.emit('drone_message', "Output: " +stdout);
-//                 }
-//             });
-//
-//         }
-//         , 5000);
-// }
+function fivesec() {
+    setInterval(location_call(), 5000);
+}
 
 function run_cmd(command) {
     exec(command, function (error, stdout, stderr) {
@@ -34,26 +23,28 @@ function run_cmd(command) {
     });
 }
 
-function start_location_tracking()
+function location_call()
 {
+    //Current Implementation: Sends location every 5s. termux-location -r updates was inconsistent
     var spawn = require('child_process').spawn;
    // track = spawn('ls', {
-    track = spawn('termux-location',['-r', "updates"], {
+    var track = spawn('termux-location', {
         //stdio: 'ignore',
         shell:true
     });
+    console.log('background process running');
     track.stdout.on('data', function(data)
     {
+       // console.log(track.stdout.on)
         io.emit("drone_message",data);
-    })
+    });
 
 }
 
 
 io.on('connect', function(socket){
     console.log('Client has connected');
-    start_location_tracking();
-     //fivesec();
+     fivesec();
      io.on('client_message', function(msg){
          console.log("message received");
          cmd = msg.replace("Client: ","");
