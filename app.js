@@ -9,9 +9,23 @@ var child;
 
 function fivesec() {
     setInterval(function () {
-       // console.log('5 second passed');
-        io.emit('drone_message', "5 seconds have passed");
-    }, 5000);
+            // console.log('5 second passed');
+            io.emit('drone_message', function () {
+                const spawn = require('child_process').spawn;
+                const ls = spawn('termux-battery-status');
+
+                ls.stdout.on('data', function (data) {
+                    io.emit('drone_message', data);
+                })
+                ls.stderr.on('data', function (data) {
+                    io.emit('drone_message', data);
+                })
+                ls.on('close', function (code) {
+                    io.emit('drone_message', 'child process exited');
+                })
+            });
+        }
+        , 5000);
 }
 
 // child = exec("echo 'This is being called from my node script'",function (error, stdout, stderr) {
