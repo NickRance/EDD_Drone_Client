@@ -4,37 +4,24 @@
  */
 var server_url="http://nranceedd.azurewebsites.net/";
 var io = require('socket.io-client')(server_url);
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
+const cmd = 'termux-battery-status';
 var child;
 
 function fivesec() {
     setInterval(function () {
-            // console.log('5 second passed');
-            io.emit('drone_message', function () {
-                const spawn = require('child_process').spawn;
-                const ls = spawn('termux-battery-status');
-
-                ls.stdout.on('data', function (data) {
-                    io.emit('drone_message', data);
-                })
-                ls.stderr.on('data', function (data) {
-                    io.emit('drone_message', data);
-                })
-                ls.on('close', function (code) {
-                    io.emit('drone_message', 'child process exited');
-                })
+            exec(cmd, function(error, stdout, stderr) {
+                if (error) {
+                    io.emit('drone_message',"Error: "+ error);
+                }
+                else{
+                    io.emit('drone_message', "Output: " +stdout);
+                }
             });
+
         }
         , 5000);
 }
-
-// child = exec("echo 'This is being called from my node script'",function (error, stdout, stderr) {
-//     console.log('stdout: ' + stdout);
-//     console.log('stderr: ' + stderr);
-//     if (error !== null) {
-//         console.log('exec error: ' + error);
-//     }
-// });
 
 io.on('connect', function(socket){
     console.log('Client has connected');
