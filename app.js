@@ -9,7 +9,7 @@ var cmd = '';
 var child;
 
 function fivesec() {
-    setInterval(location_call(), 5000);
+    setInterval(run_cmd, 5000,"termux-location");
 }
 
 function run_cmd(command) {
